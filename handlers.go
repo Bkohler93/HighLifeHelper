@@ -102,6 +102,7 @@ func (c *Config) StorageToolHandler(w http.ResponseWriter, r *http.Request) erro
 			data["IsAuthorized"] = false
 		}
 	}
+	data["WsUrl"] = c.WsUrl
 	buf := bytes.Buffer{}
 	c.tpl.ExecuteTemplate(&buf, "storageTool", data)
 	fmt.Println(buf.String())
@@ -327,6 +328,7 @@ func (c *Config) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	if !isLoggedIn {
 		data := map[string]interface{}{
 			"IsAuthorized": false,
+			"WsUrl":        c.WsUrl,
 		}
 		return c.tpl.ExecuteTemplate(w, "storageTool", data)
 	}
@@ -357,26 +359,25 @@ func (c *Config) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 		log.Fatal("failed to get storages", err)
 	}
 
-	data := map[string]interface{}{
-		"PropertyInventories": []map[string]interface{}{},
-	}
+	data := map[string]interface{}{}
 
-	propertyInventories := data["PropertyInventories"].([]map[string]interface{})
+	propertyInventories := []map[string]interface{}{}
 
 	for _, storage := range storages {
 		storageData := map[string]interface{}{
 			"ID":           storage.ID,
 			"PropertyName": storage.StorageName,
-			"SlabsClear":   storage.ClearSlabQty,
-			"BlocksClear":  storage.ClearBlockQty,
-			"SlabsCloudy":  storage.CloudySlabQty,
-			"BlocksCloudy": storage.CloudyBlockQty,
+			"SlabsClear":   storage.ClearSlabQty.Int64,
+			"BlocksClear":  storage.ClearBlockQty.Int64,
+			"SlabsCloudy":  storage.CloudySlabQty.Int64,
+			"BlocksCloudy": storage.CloudyBlockQty.Int64,
 		}
 		propertyInventories = append(propertyInventories, storageData)
 	}
-
+	data["PropertyInventories"] = propertyInventories
 	data["IsAuthorized"] = true
-
+	data["WsUrl"] = c.WsUrl
+	fmt.Println(data)
 	return c.tpl.ExecuteTemplate(w, "storageTool", data)
 }
 
