@@ -1,0 +1,17 @@
+{{define "cookSuppliesNeeded"}}
+  <div class="min-h-[100px] p-4 rounded-lg dark:text-white text-slate-800 space-y-3" id="supplies-needed-ctr">
+    <h2 class="text-center text-xl">Base Supplies Needed</h2>
+    <div class="flex justify-between gap-4">
+      <p class="text-left">Car Battery</p>
+      <span class="bg-green-500 rounded-md w-[32px] text-center" id="car-battery-needed">{{.CarBatteryNeeded}}</span>
+    </div>
+    <div class="flex justify-between gap-4">
+      <p class="text-left">Paint Thinner</p>
+      <span class="bg-green-500 rounded-md w-[32px] text-center" id="paint-thinner-needed">{{.PaintThinnerNeeded}}</span>
+    </div>
+    <div class="flex justify-between gap-4">
+      <p class="text-left">Drain Cleaner</p>
+      <span class="bg-green-500  rounded-md w-[32px] text-center" id="drain-cleaner-needed">{{.DrainCleanerNeeded}}</span>
+    </div>
+  </div>
+{{end}}

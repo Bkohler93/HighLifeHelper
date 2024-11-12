@@ -1,0 +1,98 @@
+{{define "cookTool"}}
+<div class="dark:bg-gray-900 bg-white min-h-screen flex justify-center">
+    <div id="quick-cook-ctr" class="w-full max-w-5xl p-6">
+        <h1 class="text-center text-3xl dark:text-white text-slate-800 pt-10 mb-4">Cook Calculator</h1>
+    <div class="grid gap-6 sm:grid-cols-3">
+
+        <!-- Select Recipes column -->
+        <div class="p-4">
+            <h2 class="text-center dark:text-white text-slate-800 text-xl">Select Recipe(s)</h2>
+            <div class="flex gap-2 dark:text-white text-slate-800 text-xs justify-center mb-1 mt-2">
+                <p>Lithium</p>
+                <p>Acetone</p>
+                <p>Sulfuric Acid</p>
+            </div>
+            <div id="quick-recipe-ctr">
+                {{range .Recipes}}
+                {{template "cookRecipe" .}}
+                {{end}} 
+            </div> 
+            <div class="flex">
+                <form class="flex justify-between flex-grow gap-2 ml-10 mr-2" 
+                onsubmit="updateRecipeCount()"
+                id="recipe-form"
+                hx-post="/cook-add-recipe" hx-swap="beforeend" hx-target="#quick-recipe-ctr">
+                    <input type="hidden" name="recipe-count" id="recipe-count" value="">
+                    <input type="text" name="new-recipe-lithium" id="new-recipe-lithium" value="" 
+                    class="bg-slate-200 focus:outline-none focus:ring-0 focus:bg-slate-300 transition-all duration-300 ease-linear text-center w-10 rounded-md"></input>
+
+                    <input type="text" name="new-recipe-acetone" id="new-recipe-acetone" value="" 
+                    class="bg-slate-200 focus:outline-none focus:ring-0 focus:bg-slate-300 transition-all duration-300 ease-linear text-center w-10 rounded-md"></input>
+
+                    <input type="text" name="new-recipe-sulfuric" id="new-recipe-sulfuric" value="" 
+                    class="bg-slate-200 focus:outline-none focus:ring-0 focus:bg-slate-300 transition-all duration-300 ease-linear text-center w-10 rounded-md"></input>
+                    <button type="submit"><i class="fa-solid fa-plus text-slate-400 hover:text-white transition-all duration-300"></i></button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Supplies on Hand column -->
+        <div class="space-y-8 p-4">
+            <!-- Supplies On Hand Section -->
+            <div class="space-y-4">
+              <h2 class="text-center dark:text-white text-slate-800 text-xl">Supplies On Hand</h2>
+              <div class="space-y-2">
+                {{range $ingredient := .SuppliesOnHand}}
+                <div class="flex justify-between items-center">
+                  <p class="dark:text-white text-slate-800 text-left">{{$ingredient.Name}}</p>
+                  <input value="{{$ingredient.Amount}}" 
+                         class="bg-blue-500  text-white rounded-md w-16 text-center transition-all duration-300 ease-linear focus:bg-blue-900  focus:outline-none focus:ring-0" 
+                         type="text" name="{{$ingredient.Name}}-on-hand" 
+                         hx-post="/cook-calculate" hx-target="#supplies-needed-ctr" hx-swap="outerHTML" 
+                         hx-trigger="change" hx-include="#quick-cook-ctr input">
+                </div>
+                {{end}}
+              </div>
+            </div>
+          
+            <!-- Number of Cooks Section -->
+            <div class="text-center dark:text-white text-slate-800">
+              <h2 class="text-center text-xl mb-2">Number of Cooks</h2>
+              <input value="{{.NumberOfCooks}}" 
+                     class="bg-blue-500 text-white rounded-md w-16 text-center focus:bg-blue-900  focus:outline-none focus:ring-0 transition-all duration-30 ease-linear" 
+                     type="text" name="number-of-cooks" 
+                     hx-post="/cook-calculate" hx-target="#supplies-needed-ctr" hx-swap="outerHTML" 
+                     hx-trigger="change" hx-include="#quick-cook-ctr input">
+            </div>
+          </div>
+          
+
+      <!-- Base Supplies Needed Column -->
+      <div class="min-h-[100px] p-4 rounded-lg space-y-3" id="supplies-needed-ctr">
+        <h2 class="text-center text-xl text-slate-800 dark:text-white">Base Supplies Needed</h2>
+        <div class="flex justify-between gap-4">
+          <p class="text-left text-slate-800 dark:text-white">Car Battery</p>
+          <span class=" bg-green-500 dark:text-white text-slate-800 rounded-md w-[32px] text-center" id="car-battery-needed">0</span>
+        </div>
+        <div class="flex justify-between gap-4">
+          <p class="text-left text-slate-800 dark:text-white">Paint Thinner</p>
+          <span class=" bg-green-500 dark:text-white text-slate-800 rounded-md w-[32px] text-center" id="paint-thinner-needed">0</span>
+        </div>
+        <div class="flex justify-between gap-4">
+          <p class="text-left text-slate-800 dark:text-white">Drain Cleaner</p>
+          <span class=" bg-green-500 dark:text-white text-slate-800 rounded-md w-[32px] text-center" id="drain-cleaner-needed">0</span>
+        </div>
+      </div>
+
+    </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("recipe-form").addEventListener("htmx:afterRequest", function(event) {
+        document.getElementById("new-recipe-lithium").value = ""
+        document.getElementById("new-recipe-acetone").value = ""
+        document.getElementById("new-recipe-sulfuric").value = ""
+    });
+  </script>
+{{end}}

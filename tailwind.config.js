@@ -1,0 +1,33 @@
+/** @type {import('tailwindcss').Config} */
+const plugin = require('tailwindcss/plugin')
+
+module.exports = {
+  content: ["./static/**"],
+  theme: {
+    extend: {
+      colors: {
+        primary: '#202225',
+        secondary: '#5865f2',
+        gray: {
+          900: '#202225',
+          800: '#2f3136',
+          700: '#36393f',
+          600: '#4f545c',
+          400: '#d4d7dc',
+          300: '#e3e5e8',
+          200: '#ebedef',
+          100: '#f2f3f5',
+        },
+      },
+    },
+  },
+  plugins: [
+    plugin(function({ addVariant }) {
+      addVariant('htmx-settling', ['&.htmx-settling', '.htmx-settling &'])
+      addVariant('htmx-request',  ['&.htmx-request',  '.htmx-request &'])
+      addVariant('htmx-swapping', ['&.htmx-swapping', '.htmx-swapping &'])
+      addVariant('htmx-added',    ['&.htmx-added',    '.htmx-added &'])
+    }),
+  ],
+}
+

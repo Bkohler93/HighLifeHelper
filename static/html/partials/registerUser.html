@@ -1,0 +1,25 @@
+{{define "registerUser"}}
+<div id="authModal" class="ml-16 fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <form hx-post="/register" hx-target="#authModal" hx-swap="outerHTML"
+     class="w-80 rounded-lg bg-white p-6 shadow-lg flex flex-col gap-2">
+        <h2 class="text-xl font-semibold text-gray-800">Register Group</h2>
+
+        <input name="group-name" type="text" class="text-slate-800 p-1 focus:bg-slate-200 bg-slate-100 transition-all duration-300 ease-linear focus:outline-none placeholder-slate-700" placeholder="Group name" {{if .GroupName}}value="{{.GroupName}}"{{end}} />
+        {{if .Errors.groupName}}
+            <p class="text-red-600 text-sm text-start">{{.Errors.groupName}}</p>
+        {{end}}
+
+        <input name="password" type="password" class="text-slate-800 p-1 focus:bg-slate-200 bg-slate-100 transition-all duration-300 ease-linear focus:outline-none placeholder-slate-700" placeholder="Password" />
+        {{if .Errors.password}}
+            <p class="text-red-600 text-sm text-start">{{.Errors.password}}</p>
+        {{end}}
+
+        <input name="confirm-password" type="password" class="text-slate-800 p-1 focus:bg-slate-200 bg-slate-100 transition-all duration-300 ease-linear focus:outline-none placeholder-slate-700" placeholder="Confirm Password" />
+        {{if .Errors.confirmPassword}}
+            <p class="text-red-600 text-sm text-start">{{.Errors.confirmPassword}}</p>
+        {{end}}
+
+        <button type="submit" class="mt-4 w-full rounded-md bg-blue-600 py-2 text-white hover:bg-blue-700 focus:outline-none">Register</button>
+    </form>
+</div>
+{{end}}

@@ -1,0 +1,39 @@
+{{define "index"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTMX Side Navbar!</title>
+    <script src="https://kit.fontawesome.com/881c507bda.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/ws.js"></script>
+    <link rel="stylesheet" href="/static/styles/output.css"/>
+</head>
+<body>
+   {{template "sidebar"}} 
+   <div id="main-content">
+    {{template "storageTool" .}}
+   </div>
+
+   <script>
+        document.querySelector('.sidebar-icon').classList.remove('bg-gray-800', 'text-green-500', 'rounded-3xl');
+        document.querySelector('.sidebar-icon').classList.add('bg-green-600', 'text-white', 'rounded-xl');
+
+        document.querySelectorAll('.sidebar-icon').forEach(icon => {
+            icon.addEventListener('click', function() {
+                document.querySelectorAll('.sidebar-icon').forEach(i => i.classList.remove('bg-green-600','text-white' ,'rounded-xl'));
+                document.querySelectorAll('.sidebar-icon').forEach(i => i.classList.add('bg-gray-800', 'text-green-500', 'rounded-3xl'));
+                this.classList.remove('bg-gray-800', 'text-green-500', 'rounded-3xl');
+                this.classList.add('bg-green-600', 'text-white', 'rounded-xl')
+            });
+        });
+
+        function updateRecipeCount() {
+            const recipeCount = document.querySelectorAll('#quick-recipe-ctr > div').length;
+            document.getElementById('recipe-count').value = recipeCount;
+        }
+   </script>
+</body>
+</html>
+{{end}}

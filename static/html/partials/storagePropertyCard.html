@@ -1,0 +1,44 @@
+{{define "storagePropertyCard"}}
+<form hx-post="/storage-tool-update" hx-trigger="change" hx-swap="none" class="relative w-52 bg-blue-500 shadow-md shadow-slate-500 opacity-100 translate-y-0 htmx-added:opacity-0 htmx-added:translate-y-5 transition-all duration-300 ease-out" 
+id="storage-card-{{.ID}}" hx-swap-oob="outerHTML:#storage-card-{{.ID}}">
+    <div class="flex justify-center">
+        <input name="storage-name" class="text-center text-white mb-2 mt-1 w-28 bg-blue-500 focus:ring-0 focus:outline-none underline underline-offset-1" value="{{.PropertyName}}"></input>
+    </div>
+    <div class="flex flex-col gap-3">
+        <div class="flex justify-around">
+            <input type="hidden" value="{{.ID}}" name="storage-card-id">
+            <div class="text-center"><span class="text-sm text-white text-center">Slab Clear</span></div>
+            <div class="text-center">
+                <input name="clear-slab-count" type="text" {{if .SlabsClear}}value="{{.SlabsClear}}"{{end}} class="w-10 rounded-md bg-blue-600 text-center text-white shadow-sm shadow-slate-500 transition-all duration-300 ease-linear focus:bg-blue-800 focus:outline-none focus:ring-0" />
+            </div>
+        </div>
+        <div class="flex justify-around">
+            <div class="text-center">
+                <span class="flex-grow text-sm text-white text-center">Block Clear</span>
+            </div>
+            <div class="text-center">
+                <input name="clear-block-count" type="text" {{if .BlocksClear}}value="{{.BlocksClear}}"{{end}} class="w-10 rounded-md bg-blue-600 text-center text-white shadow-sm shadow-slate-500 transition-all duration-300 ease-linear focus:bg-blue-800 focus:outline-none focus:ring-0" />
+            </div>
+        </div>
+        <div class="flex justify-around">
+            <div class="text-center">
+                <span class="flex-grow text-sm text-white text-center">Slab Cloudy</span>
+            </div>
+            <div class="text-center">
+                <input name="cloudy-slab-count" type="text" {{if .SlabsCloudy}}value="{{.SlabsCloudy}}"{{end}} class="w-10 rounded-md bg-blue-600 text-center text-white shadow-sm shadow-slate-500 transition-all duration-300 ease-linear focus:bg-blue-800 focus:outline-none focus:ring-0" />
+            </div>
+        </div>
+    
+        <div class="flex justify-around mb-10">
+            <div class="text-center"><span class="flex-grow text-sm text-white text-center">Block Cloudy</span></div>
+            <div class="text-center">
+                <input name="cloudy-block-count" type="text" {{if .BlocksCloudy}}value="{{.BlocksCloudy}}"{{end}} class="w-10 rounded-md bg-blue-600 text-center text-white shadow-sm shadow-slate-500 transition-all duration-300 ease-linear focus:bg-blue-800 focus:outline-none focus:ring-0" />
+            </div>
+        </div>
+    </div>
+    <div class="absolute bottom-2 right-2 text-white cursor-pointer">
+        <i hx-delete="/storage-delete-card" hx-target="#storage-card-{{.ID}}" hx-swap="outerHTML" hx-include="#storage-card-{{.ID}} [name=storage-card-id]"
+        class="text-slate-300 dark:text-slate-800 fa-solid fa-trash fa-sm hover:text-white transition-all duration-300"></i>
+    </div>
+</form>
+{{end}}

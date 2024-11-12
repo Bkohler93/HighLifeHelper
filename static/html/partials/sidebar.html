@@ -1,0 +1,12 @@
+{{define "sidebar"}}
+<div class="flex">
+    <div class="fixed top-0 left-0 h-screen w-16 m-0 flex flex-col bg-gray-950 text-secondary shadow-lg shadow-slate-700">
+      <i hx-get="/storage-tool" hx-target="#main-content" hx-swap="innerHTML" 
+        class="sidebar-icon bg-gray-800 text-green-500 rounded-3xl relative flex items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto shadow-lg hover:bg-green-600 hover:text-white hover:rounded-xl transition-all duration-300 ease-linear cursor-pointer fa-solid fa-warehouse"></i>
+      <i hx-get="/cook-tool" hx-target="#main-content" hx-swap="innerHTML"
+        class="sidebar-icon fa-solid fa-fire relative flex items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto shadow-lg bg-gray-800 text-green-500 hover:bg-green-600 hover:text-white rounded-3xl hover:rounded-xl transition-all duration-300 ease-linear cursor-pointer"></i>
+      <i hx-get="/truck-tool" hx-target="#main-content" hx-swap="innerHTML"
+        class="sidebar-icon fa-solid fa-truck relative flex items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto shadow-lg bg-gray-800 text-green-500 hover:bg-green-600 hover:text-white rounded-3xl hover:rounded-xl transition-all duration-300 ease-linear cursor-pointer"></i>
+    </div>
+  </div>
+{{end}}

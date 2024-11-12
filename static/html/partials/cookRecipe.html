@@ -1,0 +1,29 @@
+{{define "cookRecipe"}}
+<div class="flex rounded-lg bg-blue-500  m-2 transition-all duration-300 ease-linear" id="recipe-{{.ID}}"> 
+    <input type="checkbox" name="recipe-{{.ID}}-checkbox" id="recipe-{{.ID}}-checkbox" {{if .IsSelected}}checked{{end}} 
+           hx-post="/cook-calculate" hx-swap="outerHTML" hx-target="#supplies-needed-ctr"
+           hx-trigger="change" hx-include="#quick-cook-ctr input" 
+           class="ml-2"></input>
+    <div class="flex justify-around flex-grow dark:text-white text-slate-800 focus:outline-none focus:ring-0">
+        {{range $ingredient := .Ingredients}}
+            <input type="text" name="recipe-{{$.ID}}-{{$ingredient.Name}}" value="{{$ingredient.Amount}}" readonly 
+                   class="bg-transparent text-center text-white w-10"></input>
+        {{end}}
+        <input type="hidden" name="recipe-id" value="{{.ID}}">
+        <button 
+            hx-delete="/cook-delete-recipe" hx-target="#recipe-{{.ID}}" hx-include="#recipe-{{.ID}} [name=recipe-id]" hx-swap="outerHTML">
+            <i class="text-slate-300 dark:text-slate-800 fa-solid fa-trash fa-sm hover:text-white transition-all duration-300"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+    document.getElementById('recipe-{{.ID}}-checkbox').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('recipe-{{.ID}}').classList.add('bg-blue-900');
+        } else {
+            document.getElementById('recipe-{{.ID}}').classList.remove('bg-blue-900');
+        }
+    })
+</script>
+{{end}}
