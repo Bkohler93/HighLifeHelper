@@ -19,7 +19,12 @@ type Config struct {
 	SessionStore     *store.SessionStore
 	StorageToolStore *store.StorageToolStore
 	tpl              *template.Template
-	conns            map[string][]*websocket.Conn
+	conns            map[string][]Connection
+}
+
+type Connection struct {
+	conn      *websocket.Conn
+	sessionID string
 }
 
 func NewConfig(db *sql.DB) *Config {
@@ -33,6 +38,6 @@ func NewConfig(db *sql.DB) *Config {
 		SessionStore:     sessionStore,
 		StorageToolStore: store.NewStorageToolStore(),
 		tpl:              tpl,
-		conns:            make(map[string][]*websocket.Conn),
+		conns:            make(map[string][]Connection),
 	}
 }

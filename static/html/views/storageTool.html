@@ -1,7 +1,7 @@
 {{define "storageTool"}}
 <div id="storage-tool-ctr" class="text-center w-screen h-screen   dark:bg-gray-900 bg-white overflow-x-hidden">
 {{if .IsAuthorized}}
-    <div hx-ext="ws" ws-connect="ws://localhost:8080/ws-storage-tool"
+    <div hx-ext="ws" ws-connect="ws://localhost:8080/ws-storage-tool" hx-trigger="message"
     class="ml-16 flex w-full flex-wrap gap-8 p-8 overflow-y-auto">
         {{range $propertyInventory := .PropertyInventories}}
             {{template "storagePropertyCard" $propertyInventory}}

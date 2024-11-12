@@ -434,6 +434,7 @@ func (c *Config) StorageToolHandleWs(w http.ResponseWriter, r *http.Request) err
 	sessionID := cookie.Value
 	session, _ := c.SessionStore.GetSession(sessionID)
 	groupName := session.LoginID
+	fmt.Println("new websocket connection", sessionID)
 
 	upgrader := websocket.Upgrader{
 		ReadBufferSize:  0,
@@ -447,8 +448,18 @@ func (c *Config) StorageToolHandleWs(w http.ResponseWriter, r *http.Request) err
 	}
 
 	go readPump(conn)
+	cn := Connection{
+		conn:      conn,
+		sessionID: sessionID,
+	}
 
-	c.conns[groupName] = append(c.conns[groupName], conn)
+	// for _, cnn := range c.conns[groupName] {
+	// 	if cnn.sessionID == sessionID {
+	// 		cnn.conn.Close()
+	// 	}
+	// }
+
+	c.conns[groupName] = append(c.conns[groupName], cn)
 
 	return nil
 }
@@ -489,7 +500,10 @@ func (c *Config) StorageToolUpdateHandler(w http.ResponseWriter, r *http.Request
 	buf := &bytes.Buffer{}
 	c.tpl.ExecuteTemplate(buf, "storagePropertyCard", data)
 	for _, conn := range c.conns[groupName] {
-		conn.WriteMessage(websocket.TextMessage, buf.Bytes())
+		if sessionID != conn.sessionID {
+			conn.conn.WriteMessage(websocket.TextMessage, buf.Bytes())
+		} else {
+		}
 	}
 	return nil
 }
