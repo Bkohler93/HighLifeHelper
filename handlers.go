@@ -98,12 +98,15 @@ func (c *Config) StorageToolHandler(w http.ResponseWriter, r *http.Request) erro
 			}
 			data["IsAuthorized"] = true
 			data["PropertyInventories"] = propertyInventories
-			fmt.Printf("user joined. session_id=%s\n", sessionID)
 		} else {
 			data["IsAuthorized"] = false
 		}
 	}
-	return c.tpl.ExecuteTemplate(w, "index", data)
+	buf := bytes.Buffer{}
+	c.tpl.ExecuteTemplate(&buf, "storageTool", data)
+	fmt.Println(buf.String())
+
+	return c.tpl.ExecuteTemplate(w, "storageTool", data)
 }
 
 func (c *Config) CookToolHandler(w http.ResponseWriter, r *http.Request) error {
