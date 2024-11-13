@@ -31,38 +31,39 @@ func (c *Config) HomeHandler(w http.ResponseWriter, r *http.Request) error {
 	cookie, err := r.Cookie("session_token")
 	if err != nil {
 		data["IsAuthorized"] = false
-	} else {
-		sessionID := cookie.Value
-		if c.SessionStore.ValidateSession(sessionID) {
-			session, _ := c.SessionStore.GetSession(sessionID)
-
-			// create active connection to database
-			c.StorageToolStore.Connect(session.LoginID)
-
-			storages, err := c.StorageToolStore.GetGroupStorage(session.LoginID)
-			if err != nil {
-				log.Fatalln(err)
-			}
-
-			propertyInventories := []map[string]interface{}{}
-			for _, storage := range storages {
-				storageData := map[string]interface{}{
-					"ID":           storage.ID,
-					"PropertyName": storage.StorageName,
-					"SlabsClear":   storage.ClearSlabQty.Int64,
-					"BlocksClear":  storage.ClearBlockQty.Int64,
-					"SlabsCloudy":  storage.CloudySlabQty.Int64,
-					"BlocksCloudy": storage.CloudyBlockQty.Int64,
-				}
-				propertyInventories = append(propertyInventories, storageData)
-			}
-			data["IsAuthorized"] = true
-			data["PropertyInventories"] = propertyInventories
-
-		} else {
-			data["IsAuthorized"] = false
-		}
+		return c.tpl.ExecuteTemplate(w, "index", data)
 	}
+	sessionID := cookie.Value
+	if !c.SessionStore.ValidateSession(sessionID) {
+		data["IsAuthorized"] = false
+		return c.tpl.ExecuteTemplate(w, "index", data)
+	}
+
+	session, _ := c.SessionStore.GetSession(sessionID)
+
+	// create active connection to database
+	c.StorageToolStore.Connect(session.LoginID)
+
+	storages, err := c.StorageToolStore.GetGroupStorage(session.LoginID)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	propertyInventories := []map[string]interface{}{}
+	for _, storage := range storages {
+		storageData := map[string]interface{}{
+			"ID":           storage.ID,
+			"PropertyName": storage.StorageName,
+			"SlabsClear":   storage.ClearSlabQty.Int64,
+			"BlocksClear":  storage.ClearBlockQty.Int64,
+			"SlabsCloudy":  storage.CloudySlabQty.Int64,
+			"BlocksCloudy": storage.CloudyBlockQty.Int64,
+		}
+		propertyInventories = append(propertyInventories, storageData)
+	}
+	data["IsAuthorized"] = true
+	data["PropertyInventories"] = propertyInventories
+
 	return c.tpl.ExecuteTemplate(w, "index", data)
 }
 
@@ -295,8 +296,6 @@ func (c *Config) StorageAddCardHandler(w http.ResponseWriter, r *http.Request) e
 		"BlocksCloudy": storage.CloudyBlockQty.Int64,
 	}
 
-	fmt.Println(data)
-
 	buf := bytes.Buffer{}
 	c.tpl.ExecuteTemplate(&buf, "storagePropertyCard", data)
 
@@ -407,8 +406,26 @@ func (c *Config) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	data["PropertyInventories"] = propertyInventories
 	data["IsAuthorized"] = true
 	data["WsUrl"] = c.WsUrl
-	fmt.Println(data)
 	return c.tpl.ExecuteTemplate(w, "storageTool", data)
+}
+
+func (c *Config) LogoutHandler(w http.ResponseWriter, r *http.Request) error {
+	cookie, _ := r.Cookie("session_token")
+	sessionID := cookie.Value
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session_token",
+		Value:    sessionID,
+		Expires:  time.Unix(0, 0),
+		Secure:   true,
+		HttpOnly: true,
+		SameSite: http.SameSiteNoneMode,
+	})
+
+	data := map[string]interface{}{
+		"IsAuthorized": false,
+	}
+	return c.tpl.ExecuteTemplate(w, "index", data)
 }
 
 func (c *Config) GetRegisterHandler(w http.ResponseWriter, r *http.Request) error {

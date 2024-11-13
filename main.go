@@ -67,6 +67,7 @@ func main() {
 	})
 
 	r.Method("POST", "/login", Handler(cfg.LoginHandler))
+	r.Method("POST", "/logout", Handler(cfg.LogoutHandler))
 	r.Method("GET", "/register", Handler(cfg.GetRegisterHandler))
 	r.Method("POST", "/register", Handler(cfg.PostRegisterHandler))
 
