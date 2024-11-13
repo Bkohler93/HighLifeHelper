@@ -105,7 +105,6 @@ func (c *Config) StorageToolHandler(w http.ResponseWriter, r *http.Request) erro
 	data["WsUrl"] = c.WsUrl
 	buf := bytes.Buffer{}
 	c.tpl.ExecuteTemplate(&buf, "storageTool", data)
-	fmt.Println(buf.String())
 
 	return c.tpl.ExecuteTemplate(w, "storageTool", data)
 }
@@ -439,7 +438,6 @@ func (c *Config) StorageToolHandleWs(w http.ResponseWriter, r *http.Request) err
 	sessionID := cookie.Value
 	session, _ := c.SessionStore.GetSession(sessionID)
 	groupName := session.LoginID
-	fmt.Println("new websocket connection", sessionID)
 
 	upgrader := websocket.Upgrader{
 		ReadBufferSize:  0,
