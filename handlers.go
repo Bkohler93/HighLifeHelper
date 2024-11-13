@@ -206,6 +206,8 @@ func (c *Config) CookCalculateHandler(w http.ResponseWriter, r *http.Request) er
 	requiredAcetone := maxAcetone * numCooks
 	requiredSulfuric := maxSulfuric * numCooks
 
+	precursorWeight := requiredLithium + requiredAcetone + requiredSulfuric
+
 	carBatteryNeeded := int(math.Ceil(float64(requiredLithium-lithiumOnHand) / 10))
 	paintThinnerNeeded := int(math.Ceil(float64(requiredAcetone-acetoneOnHand) / 5))
 	drainCleanerNeeded := int(math.Ceil(float64(requiredSulfuric-sulfuricOnHand) / 5))
@@ -226,10 +228,12 @@ func (c *Config) CookCalculateHandler(w http.ResponseWriter, r *http.Request) er
 		CarBatteryNeeded   int
 		PaintThinnerNeeded int
 		DrainCleanerNeeded int
+		PrecursorWeight    int
 	}{
 		CarBatteryNeeded:   carBatteryNeeded,
 		PaintThinnerNeeded: paintThinnerNeeded,
 		DrainCleanerNeeded: drainCleanerNeeded,
+		PrecursorWeight:    precursorWeight,
 	}
 
 	w.Header().Set("Content-Type", "text/html")

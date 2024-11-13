@@ -48,7 +48,7 @@
                   <input value="{{$ingredient.Amount}}" 
                          class="bg-blue-500  text-white rounded-md w-16 text-center transition-all duration-300 ease-linear focus:bg-blue-900  focus:outline-none focus:ring-0" 
                          type="text" name="{{$ingredient.Name}}-on-hand" 
-                         hx-post="/cook-calculate" hx-target="#supplies-needed-ctr" hx-swap="outerHTML" 
+                         hx-post="/cook-calculate" hx-target="#results-ctr" hx-swap="outerHTML" 
                          hx-trigger="change" hx-include="#quick-cook-ctr input">
                 </div>
                 {{end}}
@@ -61,28 +61,38 @@
               <input value="{{.NumberOfCooks}}" 
                      class="bg-blue-500 text-white rounded-md w-16 text-center focus:bg-blue-900  focus:outline-none focus:ring-0 transition-all duration-30 ease-linear" 
                      type="text" name="number-of-cooks" 
-                     hx-post="/cook-calculate" hx-target="#supplies-needed-ctr" hx-swap="outerHTML" 
+                     hx-post="/cook-calculate" hx-target="#results-ctr" hx-swap="outerHTML" 
                      hx-trigger="change" hx-include="#quick-cook-ctr input">
             </div>
           </div>
           
 
-      <!-- Base Supplies Needed Column -->
-      <div class="min-h-[100px] p-4 rounded-lg space-y-3" id="supplies-needed-ctr">
-        <h2 class="text-center text-xl text-slate-800 dark:text-white">Base Supplies Needed</h2>
-        <div class="flex justify-between gap-4">
-          <p class="text-left text-slate-800 dark:text-white">Car Battery</p>
-          <span class=" bg-green-500 dark:text-white text-slate-800 rounded-md w-[32px] text-center" id="car-battery-needed">0</span>
+      <!-- Results column -->
+       <div id="results-ctr">
+         <div class="p-4 rounded-lg space-y-3" id="supplies-needed-ctr">
+           <h2 class="text-center text-xl text-slate-800 dark:text-white">Base Supplies Needed</h2>
+           <div class="flex justify-between gap-4">
+             <p class="text-left text-slate-800 dark:text-white">Car Battery</p>
+             <span class=" bg-green-500 dark:text-white text-slate-800 rounded-md w-[32px] text-center" id="car-battery-needed">0</span>
+            </div>
+            <div class="flex justify-between gap-4">
+              <p class="text-left text-slate-800 dark:text-white">Paint Thinner</p>
+              <span class=" bg-green-500 dark:text-white text-slate-800 rounded-md w-[32px] text-center" id="paint-thinner-needed">0</span>
+            </div>
+            <div class="flex justify-between gap-4">
+              <p class="text-left text-slate-800 dark:text-white">Drain Cleaner</p>
+              <span class=" bg-green-500 dark:text-white text-slate-800 rounded-md w-[32px] text-center" id="drain-cleaner-needed">0</span>
+            </div>
+          </div>
+          <br/>
+          <div class="p-4 rounded-lg space-y-3" id="precursor-weight">
+            <h2 class="text-center text-xl text-slate-800 dark:text-white">Storage Required</h2>
+            <div class="flex justify-between gap-4">
+              <p class="text-left text-slate-800 dark:text-white">Precursor Weight</p>
+              <span class=" bg-green-500 dark:text-white text-slate-800 rounded-md w-[32px] text-center">0</span>
+            </div> 
+          </div>
         </div>
-        <div class="flex justify-between gap-4">
-          <p class="text-left text-slate-800 dark:text-white">Paint Thinner</p>
-          <span class=" bg-green-500 dark:text-white text-slate-800 rounded-md w-[32px] text-center" id="paint-thinner-needed">0</span>
-        </div>
-        <div class="flex justify-between gap-4">
-          <p class="text-left text-slate-800 dark:text-white">Drain Cleaner</p>
-          <span class=" bg-green-500 dark:text-white text-slate-800 rounded-md w-[32px] text-center" id="drain-cleaner-needed">0</span>
-        </div>
-      </div>
 
     </div>
     </div>
