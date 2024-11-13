@@ -43,3 +43,15 @@ func readPump(conn *websocket.Conn) {
 		fmt.Println(message)
 	}
 }
+
+func broadcastTemplate(sessionID string, conns []Connection, templateBytes []byte, messageType int) {
+	for _, conn := range conns {
+		if sessionID != conn.sessionID {
+			err := conn.conn.WriteMessage(messageType, templateBytes)
+			if err != nil {
+				log.Println(err)
+			}
+		}
+	}
+
+}

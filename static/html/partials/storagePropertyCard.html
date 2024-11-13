@@ -1,5 +1,5 @@
 {{define "storagePropertyCard"}}
-<form hx-post="/storage-tool-update" hx-trigger="change" hx-swap="none" 
+<form hx-on="delete-property-card-{{.ID}}: this.remove()" hx-post="/storage-tool-update" hx-trigger="change" hx-swap="none" 
 class="relative w-52 bg-blue-500 shadow-md shadow-slate-500 opacity-100 translate-y-0 htmx-added:opacity-0 htmx-added:translate-y-5 transition-all duration-300 ease-out" 
 id="storage-card-{{.ID}}">
     <div class="flex justify-center">
@@ -42,4 +42,5 @@ id="storage-card-{{.ID}}">
         class="text-slate-300 dark:text-slate-800 fa-solid fa-trash fa-sm hover:text-white transition-all duration-300"></i>
     </div>
 </form>
+
 {{end}}

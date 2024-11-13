@@ -297,6 +297,21 @@ func (c *Config) StorageAddCardHandler(w http.ResponseWriter, r *http.Request) e
 
 	fmt.Println(data)
 
+	buf := bytes.Buffer{}
+	c.tpl.ExecuteTemplate(&buf, "storagePropertyCard", data)
+
+	msgData := map[string]string{
+		"Action":     "Add",
+		"HX-Trigger": buf.String(),
+	}
+
+	conns := c.conns[groupName]
+	for _, conn := range conns {
+		if sessionID != conn.sessionID {
+			conn.conn.WriteJSON(msgData)
+		}
+	}
+
 	return c.tpl.ExecuteTemplate(w, "storagePropertyCard", data)
 }
 
@@ -311,6 +326,18 @@ func (c *Config) StorageDeleteCardHandler(w http.ResponseWriter, r *http.Request
 	err := c.StorageToolStore.DeleteStorage(groupName, storageID)
 	if err != nil {
 		fmt.Println("error deleting storage", err)
+	}
+
+	msgData := map[string]string{
+		"Action":     "Delete",
+		"HX-Trigger": fmt.Sprintf("storage-card-%d", storageID),
+	}
+
+	conns := c.conns[groupName]
+	for _, conn := range conns {
+		if sessionID != conn.sessionID {
+			conn.conn.WriteJSON(msgData)
+		}
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -502,11 +529,7 @@ func (c *Config) StorageToolUpdateHandler(w http.ResponseWriter, r *http.Request
 	}
 	buf := &bytes.Buffer{}
 	c.tpl.ExecuteTemplate(buf, "storagePropertyCard", data)
-	for _, conn := range c.conns[groupName] {
-		if sessionID != conn.sessionID {
-			conn.conn.WriteMessage(websocket.TextMessage, buf.Bytes())
-		} else {
-		}
-	}
+
+	broadcastTemplate(sessionID, c.conns[groupName], buf.Bytes(), websocket.TextMessage)
 	return nil
 }

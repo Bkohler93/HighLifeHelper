@@ -13,6 +13,40 @@
                 <i class="fa-plus fa-solid fa-xl text-white"></i>
             </div>
         </div>
+        <script>
+            document.addEventListener("htmx:wsAfterMessage", function(event) {
+                const msg = event.detail.message;
+                try {
+                    const componentJson = JSON.parse(msg);
+            
+                    if (componentJson) {
+                        if (componentJson["Action"] === "Delete") {
+                            const element = document.getElementById(componentJson["HX-Trigger"]);
+                            if (element) {
+                                element.remove();
+                            }
+                        }
+                
+                        if (componentJson["Action"] === "Add") {
+                            const componentRawHtml = componentJson["HX-Trigger"];
+                
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(componentRawHtml, 'text/html');
+                            const newForm = doc.body.firstChild;
+                
+                            // Get the reference element where you want to insert the new form before
+                            const referenceElement = document.getElementById('add-storage-card-ctr'); // The ID of the target element
+                
+                            // Insert the new form before the reference element
+                            if (referenceElement && referenceElement.parentNode) {
+                                referenceElement.parentNode.insertBefore(newForm, referenceElement);
+                            }
+                        }
+                    }
+                } catch(_) {
+                }
+            });
+            </script>
     </div>
 {{end}}
     
