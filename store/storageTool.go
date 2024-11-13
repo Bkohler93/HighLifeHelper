@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/bkohler93/highlifehelper/data/db"
@@ -28,7 +29,7 @@ func (s *StorageToolStore) Connect(groupName string) error {
 		return nil
 	}
 
-	database, err := sql.Open("sqlite", fmt.Sprintf("./data/databases/groupStorage/%s.db", groupName))
+	database, err := sql.Open("sqlite", fmt.Sprintf(os.Getenv("DATABASE_PATH") + "/groupStorage/%s.db", groupName))
 	if err != nil {
 		log.Fatalf("error opening database for group %s: %v", groupName, err)
 		return err

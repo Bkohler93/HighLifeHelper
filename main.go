@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	_ "modernc.org/sqlite"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/joho/godotenv"
 	"github.com/pressly/goose/v3"
 )
 
@@ -18,7 +20,10 @@ const (
 )
 
 func main() {
-	db, err := sql.Open("sqlite", "./data/databases/session/session.db")
+	godotenv.Load()
+	fmt.Println(os.Getenv("DATABASE_PATH") + "/session/session.db")
+
+	db, err := sql.Open("sqlite", os.Getenv("DATABASE_PATH") + "/session/session.db")
 	if err != nil {
 		log.Fatalf("error opening database:%s", err)
 	}

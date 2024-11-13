@@ -8,7 +8,6 @@ import (
 
 	"github.com/bkohler93/highlifehelper/store"
 	"github.com/gorilla/websocket"
-	"github.com/joho/godotenv"
 )
 
 const (
@@ -37,7 +36,6 @@ func NewConfig(db *sql.DB) *Config {
 		log.Fatalf("error parsing templates:%v", err)
 	}
 
-	godotenv.Load()
 	wsUrl := os.Getenv("WS_URL")
 
 	return &Config{
