@@ -68,31 +68,7 @@
           
 
       <!-- Results column -->
-       <div id="results-ctr">
-         <div class="p-4 rounded-lg space-y-3" id="supplies-needed-ctr">
-           <h2 class="text-center text-xl text-slate-800 dark:text-white">Base Supplies Needed</h2>
-           <div class="flex justify-between gap-4">
-             <p class="text-left text-slate-800 dark:text-white">Car Battery</p>
-             <span class=" bg-green-500 dark:text-white text-slate-800 rounded-md w-[32px] text-center" id="car-battery-needed">0</span>
-            </div>
-            <div class="flex justify-between gap-4">
-              <p class="text-left text-slate-800 dark:text-white">Paint Thinner</p>
-              <span class=" bg-green-500 dark:text-white text-slate-800 rounded-md w-[32px] text-center" id="paint-thinner-needed">0</span>
-            </div>
-            <div class="flex justify-between gap-4">
-              <p class="text-left text-slate-800 dark:text-white">Drain Cleaner</p>
-              <span class=" bg-green-500 dark:text-white text-slate-800 rounded-md w-[32px] text-center" id="drain-cleaner-needed">0</span>
-            </div>
-          </div>
-          <br/>
-          <div class="p-4 rounded-lg space-y-3" id="precursor-weight">
-            <h2 class="text-center text-xl text-slate-800 dark:text-white">Storage Required</h2>
-            <div class="flex justify-between gap-4">
-              <p class="text-left text-slate-800 dark:text-white">Precursor Weight</p>
-              <span class=" bg-green-500 dark:text-white text-slate-800 rounded-md w-[32px] text-center">0</span>
-            </div> 
-          </div>
-        </div>
+        {{template "cookToolResults" .Results}}
 
     </div>
     </div>

@@ -15,6 +15,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+const (
+	BatteryCost      = 500
+	PaintThinnerCost = 300
+	DrainCleanerCost = 300
+)
+
 type Handler func(w http.ResponseWriter, r *http.Request) error
 
 func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -138,14 +144,17 @@ func (c *Config) CookToolHandler(w http.ResponseWriter, r *http.Request) error {
 		{Name: "Sulfuric Acid", Amount: 0},
 	}
 
-	data := struct {
-		Recipes        []Recipe
-		SuppliesOnHand []Ingredient
-		NumberOfCooks  int
-	}{
-		Recipes:        recipes,
-		SuppliesOnHand: suppliesOnHand,
-		NumberOfCooks:  0,
+	data := map[string]interface{}{
+		"Recipes":        recipes,
+		"SuppliesOnHand": suppliesOnHand,
+		"NumberOfCooks":  0,
+		"Results": map[string]interface{}{
+			"CarBatteryNeeded":   0,
+			"PaintThinnerNeeded": 0,
+			"DrainCleanerNeeded": 0,
+			"PrecursorWeight":    0,
+			"PrecursorCost":      0,
+		},
 	}
 
 	return c.tpl.ExecuteTemplate(w, "cookTool", data)
@@ -224,21 +233,23 @@ func (c *Config) CookCalculateHandler(w http.ResponseWriter, r *http.Request) er
 		drainCleanerNeeded = 0
 	}
 
-	data := struct {
-		CarBatteryNeeded   int
-		PaintThinnerNeeded int
-		DrainCleanerNeeded int
-		PrecursorWeight    int
-	}{
-		CarBatteryNeeded:   carBatteryNeeded,
-		PaintThinnerNeeded: paintThinnerNeeded,
-		DrainCleanerNeeded: drainCleanerNeeded,
-		PrecursorWeight:    precursorWeight,
+	carBatteryCost := carBatteryNeeded * BatteryCost
+	drainCleanerCost := drainCleanerNeeded * DrainCleanerCost
+	paintThinnerCost := paintThinnerNeeded * PaintThinnerCost
+
+	precursorCost := carBatteryCost + drainCleanerCost + paintThinnerCost
+
+	data := map[string]interface{}{
+		"CarBatteryNeeded":   carBatteryNeeded,
+		"PaintThinnerNeeded": paintThinnerNeeded,
+		"DrainCleanerNeeded": drainCleanerNeeded,
+		"PrecursorWeight":    precursorWeight,
+		"PrecursorCost":      precursorCost,
 	}
 
 	w.Header().Set("Content-Type", "text/html")
 
-	err = c.tpl.ExecuteTemplate(w, "cookSuppliesNeeded", data)
+	err = c.tpl.ExecuteTemplate(w, "cookToolResults", data)
 	if err != nil {
 		return err
 	}
