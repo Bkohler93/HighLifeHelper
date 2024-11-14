@@ -3,6 +3,8 @@
 {{if .IsAuthorized}}
     <div hx-ext="ws" ws-connect="{{.WsUrl}}/ws-storage-tool" hx-trigger="message"
     class="ml-16 flex w-full flex-wrap gap-8 p-8 overflow-y-auto">
+      <i hx-post="/logout" hx-target="#main-content" hx-swap="innerHTML"
+        class="fixed top-2 right-2 sidebar-icon fa-solid fa-right-from-bracket flex items-center justify-center h-12 w-12 mx-auto shadow-lg bg-gray-800 text-green-500 hover:bg-green-600 hover:text-white rounded-3xl hover:rounded-xl transition-all duration-300 ease-linear cursor-pointer"></i>
         {{range $propertyInventory := .PropertyInventories}}
             {{template "storagePropertyCard" $propertyInventory}}
         {{end}}

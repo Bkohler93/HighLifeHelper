@@ -21,7 +21,6 @@ const (
 
 func main() {
 	godotenv.Load()
-	fmt.Println(os.Getenv("DATABASE_PATH") + "/session/session.db")
 
 	db, err := sql.Open("sqlite", os.Getenv("DATABASE_PATH")+"/session/session.db")
 	if err != nil {
