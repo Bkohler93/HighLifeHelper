@@ -32,7 +32,7 @@ type Connection struct {
 
 func NewConfig(db *sql.DB) *Config {
 	sessionStore := store.NewSessionStore(db)
-	tpl, err := template.ParseFiles(baseHTML+"index.html", basePartials+"registerUser.html", basePartials+"cookRecipe.html", basePartials+"cookSuppliesNeeded.html", basePartials+"sidebar.html", basePartials+"storagePropertyCard.html", baseViews+"cookTool.html", baseViews+"storageTool.html", baseViews+"truckTool.html")
+	tpl, err := template.ParseFiles(baseHTML+"index.html", basePartials+"registerUser.html", basePartials+"cookRecipe.html", basePartials+"cookToolResults.html", basePartials+"sidebar.html", basePartials+"storagePropertyCard.html", baseViews+"cookTool.html", baseViews+"storageTool.html", baseViews+"truckTool.html")
 	if err != nil {
 		log.Fatalf("error parsing templates:%v", err)
 	}
@@ -53,6 +53,7 @@ func (c *Config) CheckAndCloseWebSocket(next http.Handler) http.Handler {
 		cookie, err := r.Cookie("session_token")
 		if err != nil {
 			next.ServeHTTP(w, r)
+			return
 		}
 		sessionID := cookie.Value
 		s, _ := c.SessionStore.GetSession(sessionID)
