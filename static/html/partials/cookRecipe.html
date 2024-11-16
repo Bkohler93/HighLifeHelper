@@ -1,9 +1,11 @@
 {{define "cookRecipe"}}
-<div class="flex rounded-lg bg-blue-500  m-2 transition-all duration-300 ease-linear" id="recipe-{{.ID}}"> 
-    <input type="checkbox" name="recipe-{{.ID}}-checkbox" id="recipe-{{.ID}}-checkbox" {{if .IsSelected}}checked{{end}} 
+<div class="flex justify-normal rounded-lg bg-blue-500  m-2 transition-all duration-300 ease-linear" id="recipe-{{.ID}}"> 
+    <label class="relative flex items-center space-x-2">
+        <input type="checkbox" name="recipe-{{.ID}}-checkbox" id="recipe-{{.ID}}-checkbox" {{if .IsSelected}}checked{{end}} 
            hx-post="/cook-calculate" hx-swap="outerHTML" hx-target="#results-ctr"
            hx-trigger="change" hx-include="#quick-cook-ctr input" 
-           class="ml-2"></input>
+           class="absolute peer -ml-8 mt-[2px] text-blue-800  bg-gray-300 rounded w-5 h-5 "></input>
+    </label>
     <div class="flex justify-around flex-grow dark:text-white text-slate-800 focus:outline-none focus:ring-0">
         {{range $ingredient := .Ingredients}}
             <input type="text" name="recipe-{{$.ID}}-{{$ingredient.Name}}" value="{{$ingredient.Amount}}" readonly 
