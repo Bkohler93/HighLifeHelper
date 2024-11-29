@@ -211,15 +211,15 @@ func (c *Config) CookCalculateHandler(w http.ResponseWriter, r *http.Request) er
 	acetoneOnHand, _ := strconv.Atoi(r.FormValue("Acetone-on-hand"))
 	sulfuricOnHand, _ := strconv.Atoi(r.FormValue("Sulfuric Acid-on-hand"))
 
-	requiredLithium := maxLithium * numCooks
-	requiredAcetone := maxAcetone * numCooks
-	requiredSulfuric := maxSulfuric * numCooks
+	requiredLithium := maxLithium*numCooks - lithiumOnHand
+	requiredAcetone := maxAcetone*numCooks - acetoneOnHand
+	requiredSulfuric := maxSulfuric*numCooks - sulfuricOnHand
 
 	precursorWeight := requiredLithium + requiredAcetone + requiredSulfuric
 
-	carBatteryNeeded := int(math.Ceil(float64(requiredLithium-lithiumOnHand) / 10))
-	paintThinnerNeeded := int(math.Ceil(float64(requiredAcetone-acetoneOnHand) / 5))
-	drainCleanerNeeded := int(math.Ceil(float64(requiredSulfuric-sulfuricOnHand) / 5))
+	carBatteryNeeded := int(math.Ceil(float64(requiredLithium) / 10))
+	paintThinnerNeeded := int(math.Ceil(float64(requiredAcetone) / 5))
+	drainCleanerNeeded := int(math.Ceil(float64(requiredSulfuric) / 5))
 
 	if carBatteryNeeded < 0 {
 		carBatteryNeeded = 0
