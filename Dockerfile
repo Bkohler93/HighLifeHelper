@@ -22,9 +22,6 @@ RUN go build -o /app/app
 # Stage 2: Create the final image for running the app
 FROM golang:1.23.3 
 
-# Set the environment variables
-ENV DATABASE_PATH=data/databases/production
-
 # Set the Current Working Directory inside the container
 WORKDIR /root/
 

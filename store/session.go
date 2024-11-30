@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/bkohler93/highlifehelper/data/db"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -26,7 +27,7 @@ func NewSessionStore(database *sql.DB) *SessionStore {
 	return &SessionStore{db: q}
 }
 
-func (s *SessionStore) ValidateSession(sessionID string) bool {
+func (s *SessionStore) ValidateSession(sessionID uuid.UUID) bool {
 	session, err := s.db.GetSession(context.Background(), sessionID)
 	if err != nil {
 		log.Println(err)
@@ -40,7 +41,7 @@ func (s *SessionStore) ValidateSession(sessionID string) bool {
 	return true
 }
 
-func (s *SessionStore) CreateSession(uuid string, loginID string, createdAt time.Time, expiresAt time.Time) error {
+func (s *SessionStore) CreateSession(uuid uuid.UUID, loginID string, createdAt time.Time, expiresAt time.Time) error {
 	_, err := s.db.CreateSession(context.Background(), db.CreateSessionParams{
 		Uuid:      uuid,
 		LoginID:   loginID,
@@ -72,6 +73,6 @@ func (s *SessionStore) Login(loginID, pw string) bool {
 	return err == nil
 }
 
-func (s *SessionStore) GetSession(sessionID string) (db.Session, error) {
+func (s *SessionStore) GetSession(sessionID uuid.UUID) (db.Session, error) {
 	return s.db.GetSession(context.Background(), sessionID)
 }

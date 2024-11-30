@@ -7,29 +7,31 @@ package db
 import (
 	"database/sql"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Session struct {
-	ID        int64
-	Uuid      string
+	ID        int32
+	Uuid      uuid.UUID
 	LoginID   string
 	CreatedAt time.Time
 	ExpiresAt time.Time
 }
 
 type Storage struct {
-	ID             int64
+	ID             int32
 	GroupName      string
 	StorageName    string
-	ClearSlabQty   sql.NullInt64
-	ClearBlockQty  sql.NullInt64
-	CloudySlabQty  sql.NullInt64
-	CloudyBlockQty sql.NullInt64
+	ClearSlabQty   sql.NullInt32
+	ClearBlockQty  sql.NullInt32
+	CloudySlabQty  sql.NullInt32
+	CloudyBlockQty sql.NullInt32
 	CreatedAt      time.Time
 }
 
 type User struct {
-	ID        int64
+	ID        int32
 	LoginID   string
 	PwHash    string
 	CreatedAt time.Time

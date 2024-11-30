@@ -8,19 +8,21 @@ package db
 import (
 	"context"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 const createSession = `-- name: CreateSession :one
 INSERT INTO sessions (
     uuid, login_id, created_at, expires_at
 ) VALUES (
-    ?, ?, ?, ?
+    $1, $2, $3, $4
 )
 RETURNING id, uuid, login_id, created_at, expires_at
 `
 
 type CreateSessionParams struct {
-	Uuid      string
+	Uuid      uuid.UUID
 	LoginID   string
 	CreatedAt time.Time
 	ExpiresAt time.Time
@@ -46,21 +48,21 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 
 const deleteSession = `-- name: DeleteSession :exec
 DELETE FROM sessions
-WHERE id = ?
+WHERE id = $1
 `
 
-func (q *Queries) DeleteSession(ctx context.Context, id int64) error {
+func (q *Queries) DeleteSession(ctx context.Context, id int32) error {
 	_, err := q.db.ExecContext(ctx, deleteSession, id)
 	return err
 }
 
 const getSession = `-- name: GetSession :one
 SELECT id, uuid, login_id, created_at, expires_at FROM sessions
-WHERE uuid = ? LIMIT 1
+WHERE uuid = $1 LIMIT 1
 `
 
-func (q *Queries) GetSession(ctx context.Context, uuid string) (Session, error) {
-	row := q.db.QueryRowContext(ctx, getSession, uuid)
+func (q *Queries) GetSession(ctx context.Context, argUuid uuid.UUID) (Session, error) {
+	row := q.db.QueryRowContext(ctx, getSession, argUuid)
 	var i Session
 	err := row.Scan(
 		&i.ID,
@@ -74,10 +76,10 @@ func (q *Queries) GetSession(ctx context.Context, uuid string) (Session, error) 
 
 const getSessionById = `-- name: GetSessionById :one
 SELECT id, uuid, login_id, created_at, expires_at FROM sessions
-WHERE id = ? LIMIT 1
+WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetSessionById(ctx context.Context, id int64) (Session, error) {
+func (q *Queries) GetSessionById(ctx context.Context, id int32) (Session, error) {
 	row := q.db.QueryRowContext(ctx, getSessionById, id)
 	var i Session
 	err := row.Scan(

@@ -14,7 +14,7 @@ const createUser = `-- name: CreateUser :one
 INSERT INTO users (
     login_id, pw_hash, created_at
 ) VALUES (
-    ?, ?, ?
+    $1, $2, $3
 )
 RETURNING id, login_id, pw_hash, created_at
 `
@@ -38,7 +38,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const deleteUser = `-- name: DeleteUser :exec
-DELETE FROM users WHERE login_id = ?
+DELETE FROM users WHERE login_id = $1
 `
 
 func (q *Queries) DeleteUser(ctx context.Context, loginID string) error {
@@ -47,17 +47,17 @@ func (q *Queries) DeleteUser(ctx context.Context, loginID string) error {
 }
 
 const deleteUserById = `-- name: DeleteUserById :exec
-DELETE FROM users WHERE id = ?
+DELETE FROM users WHERE id = $1
 `
 
-func (q *Queries) DeleteUserById(ctx context.Context, id int64) error {
+func (q *Queries) DeleteUserById(ctx context.Context, id int32) error {
 	_, err := q.db.ExecContext(ctx, deleteUserById, id)
 	return err
 }
 
 const getUser = `-- name: GetUser :one
 SELECT id, login_id, pw_hash, created_at FROM users
-WHERE login_id = ? LIMIT 1
+WHERE login_id = $1 LIMIT 1
 `
 
 func (q *Queries) GetUser(ctx context.Context, loginID string) (User, error) {
@@ -74,10 +74,10 @@ func (q *Queries) GetUser(ctx context.Context, loginID string) (User, error) {
 
 const getUserById = `-- name: GetUserById :one
 SELECT id, login_id, pw_hash, created_at FROM users
-WHERE id = ? LIMIT 1
+WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetUserById(ctx context.Context, id int64) (User, error) {
+func (q *Queries) GetUserById(ctx context.Context, id int32) (User, error) {
 	row := q.db.QueryRowContext(ctx, getUserById, id)
 	var i User
 	err := row.Scan(

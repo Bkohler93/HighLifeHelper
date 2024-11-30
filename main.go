@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	_ "github.com/lib/pq"
 	_ "modernc.org/sqlite"
 
 	"github.com/go-chi/chi"
@@ -22,7 +23,7 @@ const (
 func main() {
 	godotenv.Load()
 
-	db, err := sql.Open("sqlite", os.Getenv("DATABASE_PATH")+"/session/session.db")
+	db, err := sql.Open("postgres", os.Getenv("DB_STRING"))
 	if err != nil {
 		log.Fatalf("error opening database:%s", err)
 	}
@@ -33,14 +34,9 @@ func main() {
 		log.Fatalf("error pinging database:%s", err)
 	}
 
-	goose.SetDialect("sqlite")
+	goose.SetDialect("postgres")
 
-	/* uncomment if you wish to migrate down */
-	// if err := goose.Down(db, "data/sql/migrations/session"); err != nil {
-	// 	log.Fatalf("Failed to run migrations: %v", err)
-	// }
-
-	if err := goose.Up(db, "data/sql/migrations/session"); err != nil {
+	if err := goose.Up(db, "data/sql/migrations"); err != nil {
 		log.Fatalf("Failed to run migrations: %v", err)
 	}
 
