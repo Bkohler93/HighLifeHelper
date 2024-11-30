@@ -15,7 +15,7 @@ const createStorage = `-- name: CreateStorage :one
 INSERT INTO storages (
     group_name, storage_name, clear_slab_qty, clear_block_qty, cloudy_slab_qty, cloudy_block_qty, created_at
 ) VALUES (
-    ?, ?, ?, ?, ?, ?, ?
+    $1, $2, $3, $4, $5, $6, $7
 )
 RETURNING id, group_name, storage_name, clear_slab_qty, clear_block_qty, cloudy_slab_qty, cloudy_block_qty, created_at
 `
@@ -23,10 +23,10 @@ RETURNING id, group_name, storage_name, clear_slab_qty, clear_block_qty, cloudy_
 type CreateStorageParams struct {
 	GroupName      string
 	StorageName    string
-	ClearSlabQty   sql.NullInt64
-	ClearBlockQty  sql.NullInt64
-	CloudySlabQty  sql.NullInt64
-	CloudyBlockQty sql.NullInt64
+	ClearSlabQty   sql.NullInt32
+	ClearBlockQty  sql.NullInt32
+	CloudySlabQty  sql.NullInt32
+	CloudyBlockQty sql.NullInt32
 	CreatedAt      time.Time
 }
 
@@ -56,17 +56,17 @@ func (q *Queries) CreateStorage(ctx context.Context, arg CreateStorageParams) (S
 
 const deleteStorage = `-- name: DeleteStorage :exec
 DELETE FROM storages
-WHERE id = ?
+WHERE id = $1
 `
 
-func (q *Queries) DeleteStorage(ctx context.Context, id int64) error {
+func (q *Queries) DeleteStorage(ctx context.Context, id int32) error {
 	_, err := q.db.ExecContext(ctx, deleteStorage, id)
 	return err
 }
 
 const getGroupStorages = `-- name: GetGroupStorages :many
 SELECT id, group_name, storage_name, clear_slab_qty, clear_block_qty, cloudy_slab_qty, cloudy_block_qty, created_at FROM storages
-WHERE group_name = ?
+WHERE group_name = $1
 `
 
 func (q *Queries) GetGroupStorages(ctx context.Context, groupName string) ([]Storage, error) {
@@ -103,10 +103,10 @@ func (q *Queries) GetGroupStorages(ctx context.Context, groupName string) ([]Sto
 
 const getStorage = `-- name: GetStorage :one
 SELECT id, group_name, storage_name, clear_slab_qty, clear_block_qty, cloudy_slab_qty, cloudy_block_qty, created_at FROM storages
-WHERE id = ?
+WHERE id = $1
 `
 
-func (q *Queries) GetStorage(ctx context.Context, id int64) (Storage, error) {
+func (q *Queries) GetStorage(ctx context.Context, id int32) (Storage, error) {
 	row := q.db.QueryRowContext(ctx, getStorage, id)
 	var i Storage
 	err := row.Scan(
@@ -124,25 +124,25 @@ func (q *Queries) GetStorage(ctx context.Context, id int64) (Storage, error) {
 
 const updateStorage = `-- name: UpdateStorage :exec
 UPDATE storages
-SET group_name = ?,
-storage_name = ?,
-clear_slab_qty = ?,
-clear_block_qty = ?,
-cloudy_slab_qty = ?,
-cloudy_block_qty = ?,
-created_at = ?
-WHERE id = ?
+SET group_name = $1,
+storage_name = $2,
+clear_slab_qty = $3,
+clear_block_qty = $4,
+cloudy_slab_qty = $5,
+cloudy_block_qty = $6,
+created_at = $7
+WHERE id = $8
 `
 
 type UpdateStorageParams struct {
 	GroupName      string
 	StorageName    string
-	ClearSlabQty   sql.NullInt64
-	ClearBlockQty  sql.NullInt64
-	CloudySlabQty  sql.NullInt64
-	CloudyBlockQty sql.NullInt64
+	ClearSlabQty   sql.NullInt32
+	ClearBlockQty  sql.NullInt32
+	CloudySlabQty  sql.NullInt32
+	CloudyBlockQty sql.NullInt32
 	CreatedAt      time.Time
-	ID             int64
+	ID             int32
 }
 
 func (q *Queries) UpdateStorage(ctx context.Context, arg UpdateStorageParams) error {

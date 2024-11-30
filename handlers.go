@@ -40,15 +40,21 @@ func (c *Config) HomeHandler(w http.ResponseWriter, r *http.Request) error {
 		return c.tpl.ExecuteTemplate(w, "index", data)
 	}
 	sessionID := cookie.Value
-	if !c.SessionStore.ValidateSession(sessionID) {
+	sessionUUID, err := uuid.Parse(sessionID)
+	if err != nil {
 		data["IsAuthorized"] = false
 		return c.tpl.ExecuteTemplate(w, "index", data)
 	}
 
-	session, _ := c.SessionStore.GetSession(sessionID)
+	if !c.SessionStore.ValidateSession(sessionUUID) {
+		data["IsAuthorized"] = false
+		return c.tpl.ExecuteTemplate(w, "index", data)
+	}
 
-	// create active connection to database
-	c.StorageToolStore.Connect(session.LoginID)
+	session, _ := c.SessionStore.GetSession(sessionUUID)
+
+	// // create active connection to database
+	// c.StorageToolStore.Connect(session.LoginID)
 
 	storages, err := c.StorageToolStore.GetGroupStorage(session.LoginID)
 	if err != nil {
@@ -60,10 +66,10 @@ func (c *Config) HomeHandler(w http.ResponseWriter, r *http.Request) error {
 		storageData := map[string]interface{}{
 			"ID":           storage.ID,
 			"PropertyName": storage.StorageName,
-			"SlabsClear":   storage.ClearSlabQty.Int64,
-			"BlocksClear":  storage.ClearBlockQty.Int64,
-			"SlabsCloudy":  storage.CloudySlabQty.Int64,
-			"BlocksCloudy": storage.CloudyBlockQty.Int64,
+			"SlabsClear":   storage.ClearSlabQty,
+			"BlocksClear":  storage.ClearBlockQty,
+			"SlabsCloudy":  storage.CloudySlabQty,
+			"BlocksCloudy": storage.CloudyBlockQty,
 		}
 		propertyInventories = append(propertyInventories, storageData)
 	}
@@ -81,10 +87,14 @@ func (c *Config) StorageToolHandler(w http.ResponseWriter, r *http.Request) erro
 		data["IsAuthorized"] = false
 	} else {
 		sessionID := cookie.Value
-		if c.SessionStore.ValidateSession(sessionID) {
-			session, _ := c.SessionStore.GetSession(sessionID)
+		sessionUUID, err := uuid.Parse(sessionID)
+		if err != nil {
+			log.Println("Error parsing UUID", err)
+			data["IsAuthorized"] = false
+		} else if c.SessionStore.ValidateSession(sessionUUID) {
+			session, _ := c.SessionStore.GetSession(sessionUUID)
 
-			c.StorageToolStore.Connect(session.LoginID)
+			// c.StorageToolStore.Connect(session.LoginID)
 
 			storages, err := c.StorageToolStore.GetGroupStorage(session.LoginID)
 			if err != nil {
@@ -96,10 +106,10 @@ func (c *Config) StorageToolHandler(w http.ResponseWriter, r *http.Request) erro
 				storageData := map[string]interface{}{
 					"ID":           storage.ID,
 					"PropertyName": storage.StorageName,
-					"SlabsClear":   storage.ClearSlabQty.Int64,
-					"BlocksClear":  storage.ClearBlockQty.Int64,
-					"SlabsCloudy":  storage.CloudySlabQty.Int64,
-					"BlocksCloudy": storage.CloudyBlockQty.Int64,
+					"SlabsClear":   storage.ClearSlabQty.Int32,
+					"BlocksClear":  storage.ClearBlockQty.Int32,
+					"SlabsCloudy":  storage.CloudySlabQty.Int32,
+					"BlocksCloudy": storage.CloudyBlockQty.Int32,
 				}
 				propertyInventories = append(propertyInventories, storageData)
 			}
@@ -292,7 +302,9 @@ func (c *Config) CookAddRecipeHandler(w http.ResponseWriter, r *http.Request) er
 func (c *Config) StorageAddCardHandler(w http.ResponseWriter, r *http.Request) error {
 	cookie, _ := r.Cookie("session_token")
 	sessionID := cookie.Value
-	session, _ := c.SessionStore.GetSession(sessionID)
+	sessionUUID, _ := uuid.Parse(sessionID)
+
+	session, _ := c.SessionStore.GetSession(sessionUUID)
 	groupName := session.LoginID
 	storage, err := c.StorageToolStore.CreateStorage(groupName)
 	if err != nil {
@@ -301,10 +313,10 @@ func (c *Config) StorageAddCardHandler(w http.ResponseWriter, r *http.Request) e
 	data := map[string]interface{}{
 		"ID":           storage.ID,
 		"PropertyName": storage.StorageName,
-		"SlabsClear":   storage.ClearSlabQty.Int64,
-		"BlocksClear":  storage.ClearBlockQty.Int64,
-		"SlabsCloudy":  storage.CloudySlabQty.Int64,
-		"BlocksCloudy": storage.CloudyBlockQty.Int64,
+		"SlabsClear":   storage.ClearSlabQty.Int32,
+		"BlocksClear":  storage.ClearBlockQty.Int32,
+		"SlabsCloudy":  storage.CloudySlabQty.Int32,
+		"BlocksCloudy": storage.CloudyBlockQty.Int32,
 	}
 
 	buf := bytes.Buffer{}
@@ -328,7 +340,8 @@ func (c *Config) StorageAddCardHandler(w http.ResponseWriter, r *http.Request) e
 func (c *Config) StorageDeleteCardHandler(w http.ResponseWriter, r *http.Request) error {
 	cookie, _ := r.Cookie("session_token")
 	sessionID := cookie.Value
-	session, _ := c.SessionStore.GetSession(sessionID)
+	sessionUUID, _ := uuid.Parse(sessionID)
+	session, _ := c.SessionStore.GetSession(sessionUUID)
 	groupName := session.LoginID
 
 	storageID, _ := strconv.Atoi(r.FormValue("storage-card-id"))
@@ -373,10 +386,10 @@ func (c *Config) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 		return c.tpl.ExecuteTemplate(w, "storageTool", data)
 	}
 
-	c.StorageToolStore.Connect(groupName)
+	// c.StorageToolStore.Connect(groupName)
 
 	// create sessions
-	sessionID := uuid.New().String()
+	sessionID := uuid.New()
 	expiresAt := time.Now().Add(time.Hour * 24)
 	createdAt := time.Now()
 
@@ -387,7 +400,7 @@ func (c *Config) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session_token",
-		Value:    sessionID,
+		Value:    sessionID.String(),
 		Expires:  expiresAt,
 		Secure:   true,
 		HttpOnly: true,
@@ -407,10 +420,10 @@ func (c *Config) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 		storageData := map[string]interface{}{
 			"ID":           storage.ID,
 			"PropertyName": storage.StorageName,
-			"SlabsClear":   storage.ClearSlabQty.Int64,
-			"BlocksClear":  storage.ClearBlockQty.Int64,
-			"SlabsCloudy":  storage.CloudySlabQty.Int64,
-			"BlocksCloudy": storage.CloudyBlockQty.Int64,
+			"SlabsClear":   storage.ClearSlabQty.Int32,
+			"BlocksClear":  storage.ClearBlockQty.Int32,
+			"SlabsCloudy":  storage.CloudySlabQty.Int32,
+			"BlocksCloudy": storage.CloudyBlockQty.Int32,
 		}
 		propertyInventories = append(propertyInventories, storageData)
 	}
@@ -491,7 +504,8 @@ func (c *Config) PostRegisterHandler(w http.ResponseWriter, r *http.Request) err
 func (c *Config) StorageToolHandleWs(w http.ResponseWriter, r *http.Request) error {
 	cookie, _ := r.Cookie("session_token")
 	sessionID := cookie.Value
-	session, _ := c.SessionStore.GetSession(sessionID)
+	sessionUUID, _ := uuid.Parse(sessionID)
+	session, _ := c.SessionStore.GetSession(sessionUUID)
 	groupName := session.LoginID
 
 	upgrader := websocket.Upgrader{
@@ -525,7 +539,8 @@ func (c *Config) StorageToolHandleWs(w http.ResponseWriter, r *http.Request) err
 func (c *Config) StorageToolUpdateHandler(w http.ResponseWriter, r *http.Request) error {
 	cookie, _ := r.Cookie("session_token")
 	sessionID := cookie.Value
-	session, _ := c.SessionStore.GetSession(sessionID)
+	sessionUUID, _ := uuid.Parse(sessionID)
+	session, _ := c.SessionStore.GetSession(sessionUUID)
 	groupName := session.LoginID
 
 	err := r.ParseForm()

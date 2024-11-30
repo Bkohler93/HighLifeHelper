@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/bkohler93/highlifehelper/store"
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
@@ -41,7 +42,7 @@ func NewConfig(db *sql.DB) *Config {
 
 	return &Config{
 		SessionStore:     sessionStore,
-		StorageToolStore: store.NewStorageToolStore(),
+		StorageToolStore: store.NewStorageToolStore(db),
 		tpl:              tpl,
 		conns:            make(map[string][]Connection),
 		WsUrl:            wsUrl,
@@ -56,7 +57,9 @@ func (c *Config) CheckAndCloseWebSocket(next http.Handler) http.Handler {
 			return
 		}
 		sessionID := cookie.Value
-		s, _ := c.SessionStore.GetSession(sessionID)
+		sessionUUID, _ := uuid.Parse(sessionID)
+
+		s, _ := c.SessionStore.GetSession(sessionUUID)
 		groupName := s.LoginID
 
 		conns := c.conns[groupName]

@@ -1,6 +1,6 @@
 version: "2"
 sql:
-  - engine: "sqlite"
+  - engine: "postgresql"
     queries: "./data/sql/queries/**"
     schema: "./data/sql/migrations/**"
     gen:
