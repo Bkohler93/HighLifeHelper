@@ -66,10 +66,10 @@ func (c *Config) HomeHandler(w http.ResponseWriter, r *http.Request) error {
 		storageData := map[string]interface{}{
 			"ID":           storage.ID,
 			"PropertyName": storage.StorageName,
-			"SlabsClear":   storage.ClearSlabQty,
-			"BlocksClear":  storage.ClearBlockQty,
-			"SlabsCloudy":  storage.CloudySlabQty,
-			"BlocksCloudy": storage.CloudyBlockQty,
+			"SlabsClear":   storage.ClearSlabQty.Int32,
+			"BlocksClear":  storage.ClearBlockQty.Int32,
+			"SlabsCloudy":  storage.CloudySlabQty.Int32,
+			"BlocksCloudy": storage.CloudyBlockQty.Int32,
 		}
 		propertyInventories = append(propertyInventories, storageData)
 	}
