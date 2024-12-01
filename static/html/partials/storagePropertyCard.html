@@ -10,7 +10,7 @@ id="storage-card-{{.ID}}">
             <input type="hidden" value="{{.ID}}" name="storage-card-id">
             <div class="text-center"><span class="text-sm text-white text-center">Slab Clear</span></div>
             <div class="text-center">
-                <input name="clear-slab-count" type="text" {{if .SlabsClear}}value="{{.SlabsClear}}"{{end}} class="w-10 rounded-md bg-blue-600 text-center text-white shadow-sm shadow-slate-500 transition-all duration-300 ease-linear focus:bg-blue-800 focus:outline-none focus:ring-0" />
+                <input name="clear-slab-count" type="text" value="{{.SlabsClear}}" class="w-10 rounded-md bg-blue-600 text-center text-white shadow-sm shadow-slate-500 transition-all duration-300 ease-linear focus:bg-blue-800 focus:outline-none focus:ring-0" />
             </div>
         </div>
         <div class="flex justify-around">
@@ -18,7 +18,7 @@ id="storage-card-{{.ID}}">
                 <span class="flex-grow text-sm text-white text-center">Block Clear</span>
             </div>
             <div class="text-center">
-                <input name="clear-block-count" type="text" {{if .BlocksClear}}value="{{.BlocksClear}}"{{end}} class="w-10 rounded-md bg-blue-600 text-center text-white shadow-sm shadow-slate-500 transition-all duration-300 ease-linear focus:bg-blue-800 focus:outline-none focus:ring-0" />
+                <input name="clear-block-count" type="text" value="{{.BlocksClear}}" class="w-10 rounded-md bg-blue-600 text-center text-white shadow-sm shadow-slate-500 transition-all duration-300 ease-linear focus:bg-blue-800 focus:outline-none focus:ring-0" />
             </div>
         </div>
         <div class="flex justify-around">
@@ -26,14 +26,14 @@ id="storage-card-{{.ID}}">
                 <span class="flex-grow text-sm text-white text-center">Slab Cloudy</span>
             </div>
             <div class="text-center">
-                <input name="cloudy-slab-count" type="text" {{if .SlabsCloudy}}value="{{.SlabsCloudy}}"{{end}} class="w-10 rounded-md bg-blue-600 text-center text-white shadow-sm shadow-slate-500 transition-all duration-300 ease-linear focus:bg-blue-800 focus:outline-none focus:ring-0" />
+                <input name="cloudy-slab-count" type="text" value="{{.SlabsCloudy}}" class="w-10 rounded-md bg-blue-600 text-center text-white shadow-sm shadow-slate-500 transition-all duration-300 ease-linear focus:bg-blue-800 focus:outline-none focus:ring-0" />
             </div>
         </div>
     
         <div class="flex justify-around mb-10">
             <div class="text-center"><span class="flex-grow text-sm text-white text-center">Block Cloudy</span></div>
             <div class="text-center">
-                <input name="cloudy-block-count" type="text" {{if .BlocksCloudy}}value="{{.BlocksCloudy}}"{{end}} class="w-10 rounded-md bg-blue-600 text-center text-white shadow-sm shadow-slate-500 transition-all duration-300 ease-linear focus:bg-blue-800 focus:outline-none focus:ring-0" />
+                <input name="cloudy-block-count" type="text" value="{{.BlocksCloudy}}" class="w-10 rounded-md bg-blue-600 text-center text-white shadow-sm shadow-slate-500 transition-all duration-300 ease-linear focus:bg-blue-800 focus:outline-none focus:ring-0" />
             </div>
         </div>
     </div>
