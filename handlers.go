@@ -146,6 +146,15 @@ func (c *Config) CookToolHandler(w http.ResponseWriter, r *http.Request) error {
 			},
 			IsSelected: false,
 		},
+		{
+			ID: 2,
+			Ingredients: []Ingredient{
+				{Name: "Lithium", Amount: 4},
+				{Name: "Acetone", Amount: 5},
+				{Name: "Sulfuric Acid", Amount: 6},
+			},
+			IsSelected: false,
+		},
 	}
 
 	suppliesOnHand := []Ingredient{
