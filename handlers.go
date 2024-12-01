@@ -234,11 +234,15 @@ func (c *Config) CookCalculateHandler(w http.ResponseWriter, r *http.Request) er
 	requiredAcetone := maxAcetone*numCooks - acetoneOnHand
 	requiredSulfuric := maxSulfuric*numCooks - sulfuricOnHand
 
-	precursorWeight := requiredLithium + requiredAcetone + requiredSulfuric
-
 	carBatteryNeeded := int(math.Ceil(float64(requiredLithium) / 10))
 	paintThinnerNeeded := int(math.Ceil(float64(requiredAcetone) / 5))
 	drainCleanerNeeded := int(math.Ceil(float64(requiredSulfuric) / 5))
+
+	lithiumPerBattery := 10
+	acetonePerPaintThinner := 5
+	sulfuricPerDrainCleaner := 5
+
+	precursorWeight := carBatteryNeeded*lithiumPerBattery + paintThinnerNeeded*acetonePerPaintThinner + drainCleanerNeeded*sulfuricPerDrainCleaner
 
 	if carBatteryNeeded < 0 {
 		carBatteryNeeded = 0
