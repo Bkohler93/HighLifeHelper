@@ -171,6 +171,9 @@ func (c *Config) CookToolHandler(w http.ResponseWriter, r *http.Request) error {
 			"CarBatteryNeeded":   0,
 			"PaintThinnerNeeded": 0,
 			"DrainCleanerNeeded": 0,
+			"LithiumNeeded":      0,
+			"AcetoneNeeded":      0,
+			"SulfuricAcidNeeded": 0,
 			"PrecursorWeight":    0,
 			"PrecursorCost":      0,
 		},
@@ -262,16 +265,22 @@ func (c *Config) CookCalculateHandler(w http.ResponseWriter, r *http.Request) er
 
 	precursorCost := carBatteryCost + drainCleanerCost + paintThinnerCost
 
+	lithiumNeeded := carBatteryNeeded * 10
+	acetoneNeeded := paintThinnerNeeded * 5
+	sulfuricAcidNeeded := drainCleanerNeeded * 5
+
 	data := map[string]interface{}{
 		"CarBatteryNeeded":   carBatteryNeeded,
 		"PaintThinnerNeeded": paintThinnerNeeded,
 		"DrainCleanerNeeded": drainCleanerNeeded,
+		"LithiumNeeded":      lithiumNeeded,
+		"AcetoneNeeded":      acetoneNeeded,
+		"SulfuricAcidNeeded": sulfuricAcidNeeded,
 		"PrecursorWeight":    precursorWeight,
 		"PrecursorCost":      precursorCost,
 	}
 
 	w.Header().Set("Content-Type", "text/html")
-
 	err = c.tpl.ExecuteTemplate(w, "cookToolResults", data)
 	if err != nil {
 		return err
